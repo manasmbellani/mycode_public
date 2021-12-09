@@ -79,12 +79,13 @@ while [ $is_analysis_complete -ne 1 ]; do
     was_report_gen=$(cat "$tmp_file" | grep "manual_check")
     if [ ! -z "$was_report_gen" ]; then
         echo "[*] Analysis generated..."
-        is_analysis_completed=1
+        is_analysis_complete=1
+    else 
+        echo "[*] Sleeping for $SLEEP_TIME s..."
+        sleep $SLEEP_TIME
     fi
-    echo "[*] Sleeping for $SLEEP_TIME s..."
-    sleep $SLEEP_TIME
 done
 
 echo "[*] Downloading report via report_id: $report_id to outfile: $report_outfile..."
-curl -s -k -X GET -H "Authorization: bearer $bearer_token" -H "Cache-Control: no-cache" -H "Content-Type: application/json" --url "$SPLUNK_APPINSPECT_API_ENDPOINT/v1/app/report/$report_id" -o "$tmp_file"
+curl -s -k -X GET -H "Authorization: bearer $bearer_token" -H "Cache-Control: no-cache" -H "Content-Type: application/json" --url "$SPLUNK_APPINSPECT_API_ENDPOINT/v1/app/report/$report_id" -o "$report_outfile"
 rm "$tmp_file"
