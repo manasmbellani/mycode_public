@@ -6,8 +6,8 @@ USAGE="
 [-] $0 run [aws_profile=$AWS_PROFILE] [aws_region=$AWS_REGION]
 
 Script will list the EC2 instances and output the instance ID and name with 
-delim: $DELIM
-"
+delim: $DELIM using awscli
+" 
 if [ $# -lt 1 ]; then
     echo "$USAGE"
     exit 1
