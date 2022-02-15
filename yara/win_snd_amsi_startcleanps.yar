@@ -8,7 +8,7 @@ rule StartCleanPS {
    strings:
       $x1 = "Failed to get the address of 'AmsiScanBuffer'" ascii
       $x2 = "Failed to get the address of 'EtwEventWrite'" fullword ascii
-      $x3 = "[*] Powershell started successfully" fullword ascii
+      $x3 = "Powershell started successfully" fullword ascii
       $x4 = "SnD_AMSI\\Remote.nim" fullword ascii
       $x5 = "AMSI disabled" fullword ascii
    condition:
