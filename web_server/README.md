@@ -11,6 +11,6 @@ docker build -t http_web_server:latest .
 ### Via Dockerfile
 To run a docker container on port 8080, run the command:
 ```
-HTTP_PORT=8080 docker run -p $HTTP_PORT:$HTTP_PORT http_web_server:latest $HTTP_PORT
+HTTP_PORT=8080; docker run -p $HTTP_PORT:$HTTP_PORT http_web_server:latest $HTTP_PORT
 ```
 
