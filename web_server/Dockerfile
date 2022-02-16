@@ -4,4 +4,4 @@ LABEL maintainer=manasmbellani
 WORKDIR /opt/app
 COPY . .
 
-CMD ["python", "./web_server.py"]
+ENTRYPOINT ["python", "./web_server.py"]
