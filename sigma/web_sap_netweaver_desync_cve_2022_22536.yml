@@ -1,0 +1,47 @@
+title: SAP Netweaver Desync vulnerability (CVE-2022-22536)
+id: b4a9c4ed-34b7-4a57-a934-11d8f815ae2f
+status: experimental
+description: Specific requests to SAP Netweaver paths can be associated with SAP Netweaver Desync vulnerability
+author: manasmbellani
+date: 2022/02/17
+modified: 2022/02/17
+references:
+    - https://github.com/antx-code/CVE-2022-22536
+logsource:
+    category: webserver
+detection:
+    selection:
+        cs-path|contains:
+            - '/sap/public/bc/ur/Login/assets/corbu/sap_logo.png'
+            - '/sap/admin/public/default.html'
+        sc-status:
+            - 400
+            - 501
+            - 502
+            - 503
+            - 504
+            - 505
+            - 506
+            - 507
+            - 508
+            - 509
+    uafilter:
+        cs-useragent|contains:
+            - 'CVE-2022-22536'
+    condition: selection OR uafilter
+fields:
+    - cs-ip
+    - cs-uri-query
+    - cs-method
+    - cs-path
+    - cs-referer
+    - cs-useragent
+    - sc-status
+    - sc-bytes
+falsepositives:
+    - web applications that use the same URL parameters as SAP Netweaver
+level: high
+tags:
+    - attack.initial_access
+    - attack.t1190
+
