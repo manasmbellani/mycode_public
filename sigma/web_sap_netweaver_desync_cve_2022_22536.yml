@@ -39,7 +39,7 @@ fields:
     - sc-status
     - sc-bytes
 falsepositives:
-    - web applications that use the same URL parameters as SAP Netweaver
+    - web applications that use the same URL parameters as SAP Netweaver. Response length can also be used to weed out false positives as typically desync attempts may send large data body e.g. >3000 chars (sc-bytes)
 level: high
 tags:
     - attack.initial_access
