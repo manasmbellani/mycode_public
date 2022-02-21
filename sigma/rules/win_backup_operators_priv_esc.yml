@@ -10,6 +10,7 @@ tags:
     - attack.t1068
 references:
     - https://medium.com/@manasmbellani/expoiting-and-detecting-privilege-escalation-via-a-windows-backup-operator-attack-and-detection-a97e67644214
+    - https://security.stackexchange.com/questions/182540/how-could-users-in-backup-operators-group-escalate-its-privileges/182549
 logsource:
     product: windows
     service: application
