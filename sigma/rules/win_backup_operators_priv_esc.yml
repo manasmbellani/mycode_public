@@ -1,0 +1,25 @@
+title: T1068 Privilege Escalation Via The Backup Operators group
+id: eddedd6b-91e6-4c49-9314-5f50c0b88a90
+description: Detects a threat actor abusing Backup Operators privilege by updating GptTmpl.inf files
+status: experimental
+date: 2022/02/22
+modified: 
+author: manasmbellani
+tags:
+    - attack.privilege_escalation
+    - attack.t1068
+references:
+    - https://medium.com/@manasmbellani/expoiting-and-detecting-privilege-escalation-via-a-windows-backup-operator-attack-and-detection-a97e67644214
+logsource:
+    product: windows
+    service: application
+detection:
+    selection_one: 
+        EventID: 
+          - 704
+          - 721
+        RestoreTargetNameList|contains: 'GptTmpl.inf'
+    condition: selection_one
+falsepositives:
+    - Other regular backup/restoration options that may recover GptTmpl.inf. Can compare the volume of other backup files to reduce False Positives
+level: medium
