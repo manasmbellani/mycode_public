@@ -1,0 +1,23 @@
+title: T1558 Windows Accounts requesting Kerberos Tickets
+id: b773fa47-7d7e-4437-adce-49abc1d149db
+description: Detects powershell commands which will generate Kerberos tickets to be stored in memory
+status: experimental
+date: 2022/02/25
+modified: 
+author: manasmbellani
+tags:
+    - attack.t1558
+references:
+    - https://www.ired.team/offensive-security-experiments/active-directory-kerberos-abuse/t1208-kerberoasting
+logsource:
+    product: windows
+    service: powershell
+detection:
+    selection_one: 
+        ScriptBlockText|contains|all:
+        - "System.IdentityModel"
+        - "KerberosRequestorSecurityToken"
+    condition: selection_one
+falsepositives:
+    - unknown
+level: medium

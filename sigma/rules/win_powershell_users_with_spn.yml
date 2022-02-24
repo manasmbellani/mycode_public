@@ -1,0 +1,24 @@
+title: T1558 Windows Accounts with SPN via powershell
+id: 86863827-2817-4cf3-9d6f-06a7d3652f7c
+description: Detects powershell commands which look for enabled SPNs that can be used for Kerberoasting
+status: experimental
+date: 2022/02/25
+modified: 
+author: manasmbellani
+tags:
+    - attack.t1558
+references:
+    - https://www.ired.team/offensive-security-experiments/active-directory-kerberos-abuse/t1208-kerberoasting
+logsource:
+    product: windows
+    service: powershell
+detection:
+    selection_one: 
+        ScriptBlockText|contains|all:
+        - "get-adobject"
+        - "serviceprincipalname"
+        - "-filter"
+    condition: selection_one
+falsepositives:
+    - Admins running commands based on serviceprincipalnames
+level: medium
