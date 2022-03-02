@@ -1,0 +1,30 @@
+title: Google Cloud Exempted Users From Audit Configuration
+id: 64225d43-25dd-4539-ac5f-b3f1ba4357bf
+description: Detects when a user is exempted from generating logs of their activity
+via the IAM Default Audit Configuration
+author: Manas Bellani @manasmbellani
+status: experimental
+date: 2022/03/01
+references:
+    - https://console.cloud.google.com/iam-admin/audit/allservices > Exempted Users
+logsource:
+  product: gcp
+  service: gcp.audit
+detection:
+  selection:
+      method_name: 
+        - setIamPolicy
+      audit_config_action: 
+        - ADD
+      exempted_member:
+        - "*"
+  condition: selection
+fields:
+  - audit_config_action
+  - audit_config_log_type
+  - exempted_member
+level: low
+tags:
+    - attack.defense_evasion
+falsepositives:
+ - System administrator legitimately excludes audit config logging for a user

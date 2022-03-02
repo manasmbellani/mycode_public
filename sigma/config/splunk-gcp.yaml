@@ -1,0 +1,16 @@
+title: Splunk GCP Field Mappings and configuration
+order: 20
+backends:  
+  - splunk
+logsources:
+  gcp-audit:
+    product: gcp
+    service: gcp.audit
+    conditions:
+      index: "google*"
+fieldmappings:
+  log_name: logName
+  exempted_member: protoPayload.serviceData.policyDelta.auditConfigDeltas{}.exemptedMember
+  method_name: protoPayload.methodName
+  audit_config_action: protoPayload.serviceData.policyDelta.auditConfigDeltas{}.action
+  audit_config_log_type: protoPayload.serviceData.policyDelta.auditConfigDeltas{}.logType
