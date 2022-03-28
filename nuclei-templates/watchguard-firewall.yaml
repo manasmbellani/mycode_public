@@ -1,0 +1,27 @@
+id: watchguard-firewall
+
+info:
+  name: Look for Watchguard firewalls which are known to be vulnerable to various vulnerabilities
+  author: manasmbellani
+  severity: info
+  reference:
+    -  "CVE-2022-26318: https://nvd.nist.gov/vuln/detail/CVE-2022-26318"
+    -  "CVE-2022-26318 Exploit: https://github.com/Throns1956/watchguard_cve-2022-26318"
+  tags: exposure,watchguard,fireware
+
+requests:
+  - method: GET
+    path:
+      - "{{BaseURL}}/"
+
+    matchers-condition: or
+    matchers:
+      - type: word
+        words:
+          - '<title>WatchGuard Firewall'
+        part: body
+
+      - type: word
+        words:
+          - 'Server: WatchGuard Firewall'
+        part: header
