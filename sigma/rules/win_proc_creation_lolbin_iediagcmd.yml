@@ -1,0 +1,28 @@
+title: Process Creation Via iediagcmd.exe LOLBIN
+id: 2cf7668f-1066-40b4-99e8-663402a2e029
+description: Detect Process Creation Via iediagcmd.exe Lolbin. Discovered By Adam @Hexacorn
+status: experimental
+author: Manas Bellani
+date: 2022/03/28
+modified: 2022/03/28
+references:
+    - Discovery Tweet by Adam @Hexacorn: https://twitter.com/Hexacorn/status/1507516393859731456?s=20&t=OsvapM0grRFc_VYbnY2jig
+tags:
+    - attack.defense_evasion
+    - attack.t1218
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection:
+        Image|endswith: 'iediagcmd.exe'
+        CommandLine|contains:
+            - '/out'
+    condition: selection
+fields:
+    - ComputerName
+    - User
+    - CommandLine
+falsepositives:
+    - Legitimate use of cmstp.exe utility by legitimate user
+level: high
