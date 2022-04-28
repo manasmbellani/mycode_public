@@ -1,0 +1,30 @@
+title: Kerberos Authentication Ticket Requested During ASREP Roasting
+id: 92e790ed-82b0-44aa-923d-194cd80bfd32
+description: Kerberos Authentication Ticket Requested During ASREP Roasting
+status: experimental
+author: Manas Bellani
+date: 2022/04/29
+modified: 2022/04/29
+references:
+    - ASREPRoasting - https://www.ired.team/offensive-security-experiments/active-directory-kerberos-abuse/as-rep-roasting-using-rubeus-and-hashcat
+tags:
+    - attack.credential_access
+    - attack.t1558.004
+logsource:
+    service: application
+    product: windows
+detection:
+    selection:
+        EventID: 
+          - 4769
+          - 4768
+        TicketOptions: '0x40810000'
+        TicketEncryptionType: '0x17'
+    condition: selection
+fields:
+    - ComputerName
+    - User
+    - CommandLine
+falsepositives:
+    - Unknown
+level: high
