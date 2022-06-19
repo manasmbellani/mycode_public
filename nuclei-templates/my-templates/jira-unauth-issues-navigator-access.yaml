@@ -1,0 +1,28 @@
+id: jira-unauth-issues-navigator-access
+
+info:
+  name: Atlassian Unauthenticated JIRA Issues Navigator Access
+  author: manasmbellani
+  severity: medium
+  reference:
+    - https://twitter.com/momika233/status/1537785039232339968?s=20&t=DByc48tfQTBcM95uB4xxwA
+  tags: exposure,jira
+
+requests:
+  - method: GET
+    path:
+      - "{{BaseURL}}/issues/"
+      - "{{BaseURL}}/issues"
+
+    matchers-condition: and
+    matchers:
+      - type: status
+        status:
+          - 200
+
+      - type: word
+        words:
+          - 'Issue Navigator'
+          - 'Reported by me'
+          - 'No issues were found'
+        condition: or
