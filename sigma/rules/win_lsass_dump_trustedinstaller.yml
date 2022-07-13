@@ -1,0 +1,41 @@
+title: T1003 Windows LSASS Dump With TrustedInstaller Service
+id: dd08dae1-0cf5-49ec-8216-512b2fc652ec
+description: Detects Attempts To Dump LSASS Process For Credentials Access Via TrustedInstaller Service
+status: experimental
+date: 2022/07/13
+modified: 
+author: manasmbellani
+tags:
+    - attack.t1003.001
+references:
+    - https://www.pepperclipp.com/other-articles/dump-lsass-when-debug-privilege-is-disabled
+    - https://medium.com/@manasmbellani/dumping-lsass-via-trustedinstaller-attack-and-defence-920749ad31e9?postPublishedType=initial
+logsource:
+    product: windows
+    service: sysmon
+detection:
+    selection_one: 
+      EventID: 1
+      CommandLine|contains|all: 
+      - 'sc'
+      - '-ma'
+    selection_two: 
+      EventID: 1
+      CommandLine|contains|all: 
+      - 'sc'
+      - 'procdump'
+    selection_three: 
+      EventID: 1
+      CommandLine|contains|all: 
+      - 'sc'
+      - 'lsass'
+    selection_four:
+      EventID: 13
+      TargetObject|endswith: 'Services\TrustedInstaller\ImagePath'
+    selection_five:
+      EventID: 7000
+      EventData.param1|contins: 'Windows Modules Installer'
+    condition: (selection_one OR selection_two OR selection_three) AND (selection_four OR selection_five)
+falsepositives:
+    - Unknown
+level: medium
