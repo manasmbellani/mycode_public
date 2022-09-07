@@ -50,7 +50,7 @@ def compress_encrypt_file(params):
         print("[-] Unknown OS: {}".format(sys.platform))
         sys.exit(1)
     
-    if not os.path.file(params['7z_path']):
+    if not os.path.isfile(params['7z_path']):
         print("[-] 7z Path not found. Is 7z installed?")
         sys.exit(1)
 
