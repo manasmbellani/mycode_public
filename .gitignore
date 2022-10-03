@@ -133,4 +133,8 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Custom files
 **/venv
+**/.DS_Store
+

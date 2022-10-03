@@ -11,9 +11,18 @@ python3 -m pip install -r requirements.txt
 deactivate
 ```
 
-## Example
+## Examples
+
+### Example1 - Single file
 Extract keys through defined regexes in file: `conf/conf_template.yaml` from PDF file `in.pdf` as defined in  to `out-pdf.csv` file
 ```
 source venv/bin/activate
 python3 main.py -c conf/conf_template.yaml -f ~/Downloads/in.pdf
+```
+
+### Example2 - Multiple files
+Parse multiple PDF files in `~/Downloads` folder as follows:
+```
+source venv/bin/activate
+ls -1 ~/Downloads | grep -i pdf | xargs -I ARG /bin/bash -c "python3 main.py -c conf/conf_template.yaml -f ~/Downloads/ARG -o ARG; mv ARG ARG.csv"
 ```
