@@ -1,0 +1,7 @@
+# This file is a configuration file which describes the configuration input to the script
+# It consists of multiple regexes supplied as a list which contains captures as shown below
+# which are extracted from the PDF file and are subsequently written as CSV file
+# 
+regexes:
+  - "(?P<key>[a-zA-Z0-9]+):\\s*(?P<value>[a-zA-Z0-9]+)"
+  - "(?P<key>[a-zA-Z]+):\\s*(?P<value>[a-zA-Z]+)"
