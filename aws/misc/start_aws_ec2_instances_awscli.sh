@@ -43,6 +43,7 @@ for i in $(seq 0 $instances_count); do
     if [ ! -z "$instance_id" ] && [ "$instance_id" != "null" ]; then
         instance_tags=$(echo "$instances_out" | jq -r ".Reservations[$i].Instances[0].Tags")
         instance_tags_count=$(echo "$instances_out" | jq -r ".Reservations[$i].Instances[0].Tags | length")
+        instance_tags_count=$(($instance_tags_count - 1))
 
         # Check if we need to start instance
         should_start_instance=0
@@ -61,7 +62,7 @@ for i in $(seq 0 $instances_count); do
                     instance_name="$instance_tag_value"
                 fi
             done
-
+            
             # Does instance tag value match
             is_tag_matching=$(echo "$tags_to_run" | grep -iE "$instance_tag_value")
             if [ ! -z "$is_tag_matching" ]; then
@@ -70,7 +71,10 @@ for i in $(seq 0 $instances_count); do
         fi
 
         # Output the instance ID and name
-        aws ec2 start-instances --instance-ids "$instance_id" --profile "$aws_profile" --region "$aws_region"
+        if [ "$should_start_instance" == "1" ]; then
+            echo "[*] Starting EC2 instance: $instance_id..."
+            aws ec2 start-instances --instance-ids "$instance_id" --profile "$aws_profile" --region "$aws_region"
+        fi
     fi
 done
 
