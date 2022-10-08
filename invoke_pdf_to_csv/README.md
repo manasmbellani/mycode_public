@@ -21,8 +21,8 @@ python3 main.py -c conf/conf_template.yaml -f ~/Downloads/in.pdf
 ```
 
 ### Example2 - Multiple files
-Parse multiple PDF files in `~/Downloads` folder as follows:
+Parse multiple PDF files in `~/Downloads` folder and put csv output files back in the `~/Downloads` folder as follows:
 ```
 source venv/bin/activate
-ls -1 ~/Downloads | grep -i pdf | xargs -I ARG /bin/bash -c "python3 main.py -c conf/conf_template.yaml -f ~/Downloads/ARG -o ARG; mv ARG ARG.csv"
+ls -1 ~/Downloads | grep -i pdf | xargs -I ARG /bin/bash -c "python3 main.py -c conf/conf_template.yaml -f ~/Downloads/ARG -o ARG; mv ARG ~/Downloads/ARG.csv"
 ```
