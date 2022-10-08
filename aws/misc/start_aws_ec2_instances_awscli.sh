@@ -6,7 +6,7 @@ TAGS_TO_RUN="all"
 USAGE="
 [-] $0 run [tags_to_run=$TAGS_TO_RUN] [aws_profile=$AWS_PROFILE] [aws_region=$AWS_REGION]
 
-Script will list the EC2 instances and output the instance ID and name with delim: $DELIM
+Script will run the EC2 instances with specified tag
 "
 if [ $# -lt 1 ]; then
     echo "$USAGE"
