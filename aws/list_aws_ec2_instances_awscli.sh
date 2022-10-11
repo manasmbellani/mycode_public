@@ -54,7 +54,10 @@ for i in $(seq 0 $instances_count); do
         # Get the public IP
         public_ip=$(echo "$instances_out" | jq -r ".Reservations[$i].Instances[0].PublicIpAddress")
 
+        # Get the public IP attached to the interface
+        public_ip_interface=$(echo "$instances_out" | jq -r ".Reservations[$i].Instances[0].NetworkInterfaces[0].Association.PublicIp")
+
         # Output the instance ID and name
-        echo "$instance_id$DELIM$instance_name$DELIM$instance_state$DELIM$public_ip"
+        echo "$instance_id$DELIM$instance_name$DELIM$instance_state$DELIM$public_ip$DELIM$public_ip_interface"
     fi
 done
