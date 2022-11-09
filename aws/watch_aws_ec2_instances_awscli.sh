@@ -3,7 +3,7 @@ SCRIPT_DIR=$(dirname "$0")
 DELIM="|"
 AWS_PROFILE="default"
 AWS_REGION="ap-southeast-2"
-REPEAT_PERIOD=5
+REPEAT_PERIOD=3
 SEPARATOR="----------"
 USAGE="
 [-] $0 run [aws_profile=$AWS_PROFILE] [aws_region=$AWS_REGION] [repeat_period=$REPEAT_PERIOD]
