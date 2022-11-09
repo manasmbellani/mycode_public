@@ -2,19 +2,20 @@
 DELIM="|"
 AWS_PROFILE="default"
 AWS_REGION="ap-southeast-2"
-TAGS_TO_RUN="all"
 USAGE="
-[-] $0 run [tags_to_run=$TAGS_TO_RUN] [aws_profile=$AWS_PROFILE] [aws_region=$AWS_REGION]
+[-] $0 <tags_to_run> [aws_profile=$AWS_PROFILE] [aws_region=$AWS_REGION]
 
-Script will run the EC2 instances with specified tag
+Script will run the EC2 instances with specified tags.
+If 'all' set, then all instances are stopped
+Otherwise, if specific tag value specified then
 "
 if [ $# -lt 1 ]; then
     echo "$USAGE"
     exit 1
 fi
-tags_to_run=${2:-"$TAGS_TO_RUN"}
-aws_profile=${3:-"$AWS_PROFILE"}
-aws_region=${4:-"$AWS_REGION"}
+tags_to_run="${1}"
+aws_profile=${2:-"$AWS_PROFILE"}
+aws_region=${3:-"$AWS_REGION"}
 
 # Check if jq exists
 does_aws_exist=$(which "aws")
