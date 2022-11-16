@@ -5,7 +5,7 @@ AWS_REGION="ap-southeast-2"
 USAGE="
 [-] $0 <tags_to_run> [aws_profile=$AWS_PROFILE] [aws_region=$AWS_REGION]
 
-Script will run the EC2 instances with specified tags.
+Script will run the EC2 instances with specified tags (in regex format for multiple tags).
 If 'all' set, then all instances are stopped
 Otherwise, if specific tag value specified then
 "
