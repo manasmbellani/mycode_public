@@ -73,7 +73,7 @@ for i in $(seq 0 $instances_count); do
 
         # Output the instance ID and name
         if [ "$should_start_instance" == "1" ]; then
-            echo "[*] Starting EC2 instance: $instance_id..."
+            echo "[*] Starting EC2 instance: $instance_id with name tag: $instance_tag_value..."
             aws ec2 start-instances --instance-ids "$instance_id" --profile "$aws_profile" --region "$aws_region"
         fi
     fi
