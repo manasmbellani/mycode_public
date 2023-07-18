@@ -1,0 +1,30 @@
+id: jupyterlab-server
+
+info:
+  name: Look for Jupyterlab servers which are could be vulnerable to various vulnerabilities
+  author: manasmbellani
+  severity: info
+  reference:
+    -  "CVE-2022-29241:	Cross-Site Scripting vulnerability in JupyterLab"
+  tags: exposure,jupyterlab
+
+requests:
+  - method: GET
+    path:
+      - "{{BaseURL}}/lab"
+      - "{{BaseURL}}/login"
+      - "{{BaseURL}}/lab/workspaces/auto-J"
+    matchers-condition: or
+    matchers:
+      - type: word
+        words:
+          - '<title>JupyterLab Server'
+          - '<title>Jupyter Server'
+          - '<title>JupyerLab</title>'
+          - 'id="jupyer_server"'
+          - 'jupyter/lab/settings'
+          - 'jupyterlab_pygments'
+          - 'jupyter/labextensions'
+        condition: or
+        part: body
+
