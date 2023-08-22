@@ -17,7 +17,11 @@ print("[*] Building URL to test based on whether favicon relative path is presen
 if args.url.endswith("/favicon.ico"):
     url_to_test = args.url
 else:
-    url_to_test = args.url + '/favicon.ico'
+    if args.url.endswith("/"):
+        url_to_test = args.url + 'favicon.ico'
+    else:
+        url_to_test = args.url + '/favicon.ico'
+
 
 print(f"[*] Testing URL: {url_to_test}...")
 response = requests.get(url_to_test, verify=False)
