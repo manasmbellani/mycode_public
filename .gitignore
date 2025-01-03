@@ -138,3 +138,5 @@ dmypy.json
 **/venv
 **/.DS_Store
 
+# Ignore PDF files
+**/*.pdf
