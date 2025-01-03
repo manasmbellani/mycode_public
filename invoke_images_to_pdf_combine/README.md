@@ -2,7 +2,9 @@
 
 Script to combine a set of image files into a PDF from a folder. 
 
-If the folder contains any file that is not an image eg jpg, png, etc. then a warning is shown but the combining process continues
+If the folder contains any file that is not an image eg jpg, png, etc. then a warning is shown but the combining process continues.
+
+Images are combined in the PDF in the ascending order of the image file names. So files which come first alphabetically will appear first in combined PDF.
 
 ## Setup
 
