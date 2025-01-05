@@ -34,13 +34,17 @@ file="${2}"
 commit_msg="${3}"
 
 echo "[*] Checking if file: $file exists..."
-if [ ! -f "$file" ]; then
+if [ ! -e "$file" ]; then
     echo "File: $file not found"
     exit 1
 fi
 
 if [ "$action" == "diff" ]; then
-    dir_path=$(dirname "$file")
+    if [ -d "$file" ]; then
+        dir_path="$file"
+    else
+        dir_path=$(dirname "$file")
+    fi
     cwd=$(pwd)
     cd "$dir_path"
     git status
@@ -53,7 +57,11 @@ elif [ "$action" == "commit" ]; then
         exit 1
     fi
     
-    dir_path=$(dirname "$file")
+    if [ -d "$file" ]; then
+        dir_path="$file"
+    else
+        dir_path=$(dirname "$file")
+    fi
     cwd=$(pwd)
     cd "$dir_path"
 
