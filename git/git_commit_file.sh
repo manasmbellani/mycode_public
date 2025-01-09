@@ -47,6 +47,7 @@ if [ "$action" == "diff" ]; then
     fi
     cwd=$(pwd)
     cd "$dir_path"
+    git pull
     git status
     git diff "$file"
     cd "$cwd"
@@ -64,7 +65,7 @@ elif [ "$action" == "commit" ]; then
     fi
     cwd=$(pwd)
     cd "$dir_path"
-
+    git pull
     git status
     git add "$file"
     git commit -m "$commit_msg"
