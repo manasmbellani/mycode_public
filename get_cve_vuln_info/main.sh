@@ -1,4 +1,5 @@
 #!/bin/bash
+SCRIPT_DIR=$(dirname "$0")
 USER_AGENT="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 Edg/131.0.0.0"
 CVELIST_CLONE_DIR="$HOME/opt/cvelistV5"
 CVELIST_URL="https://github.com/CVEProject/cvelistV5"
@@ -7,14 +8,14 @@ WRITE_TO_OUTFILE=1
 OUTFILE_PREFIX="out-cve-info"
 TMP_DIR="/tmp"
 
-USAGE="$0 <cve_id> [write_to_outfile=$WRITE_TO_OUTFILE] [outfile_prefix=$OUTFILE_PREFIX] [cvelist_clone_dir=$CVELIST_CLONE_DIR]"
+USAGE="$0 <cve_id> [write_to_outfile=$WRITE_TO_OUTFILE] [outfile_prefix=$SCRIPT_DIR/$OUTFILE_PREFIX] [cvelist_clone_dir=$CVELIST_CLONE_DIR]"
 if [ $# -lt 1 ]; then
     echo "[-] $USAGE"
     exit 1
 fi
 cve_id="${1}"
 write_to_outfile=${2:-"$WRITE_TO_OUTFILE"}
-outfile_prefix=${3:-"$OUTFILE_PREFIX"}
+outfile_prefix=${3:-"$SCRIPT_DIR/$OUTFILE_PREFIX"}
 cvelist_clone_dir=${4:-"$CVELIST_CLONE_DIR"}
 
 # Convert to upper case
@@ -23,7 +24,7 @@ cve_id=$(echo "$cve_id" | tr '[:lower:]' '[:upper:]')
 # Build the output file path
 outfile_path="/dev/null"
 if [ "$write_to_outfile" == "1" ]; then
-    outfile_path="$OUTFILE_PREFIX-$cve_id.txt"
+    outfile_path="$outfile_prefix-$cve_id.txt"
 fi
 
 if [ ! -d "$cvelist_clone_dir" ]; then

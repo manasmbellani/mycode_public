@@ -15,7 +15,7 @@ Apart from basic gnu linux commands such as `curl` and `find`, `jq` needs to be 
 
 ## Usage
 
-To get the information for a CVE ID `CVE-2025-0282` from all sources and write the results (default: `1`/yes)  to an output file  (default: `out-cve-info-CVE-2025-0282.txt`):
+To get the information for a CVE ID `CVE-2025-0282` from all sources and write the results (default: `1`/yes)  to an output file  (default: `out-cve-info-CVE-2025-0282.txt` in `main.sh`'s directory):
 
 ```
 ./main.sh "CVE-2025-0282"
