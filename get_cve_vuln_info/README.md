@@ -1,4 +1,4 @@
-# get_cve_info
+# get_cve_vuln_info
 
 Script to get the information about a given CVE / vulnerability
 

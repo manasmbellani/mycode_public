@@ -1,4 +1,4 @@
-# get_trending_vulnerabilities
+# get_trending_cve_vulnerabilities
 
 Script to connect to variety of public vulnerability trending sources to identify vulnerabilities which appear to be most talked about.
 
