@@ -12,6 +12,8 @@ Install-Module MsrcSecurityUpdates -Force
 
 ## Usage
 
+To lookup the KB Articles and Catalog Update URLs for the CVE `CVE-2024-49138` via the API:
+
 ```
 ./Get-MicrosoftKBForVulnCVE.ps1 -CVE CVE-2024-49138
 ```
