@@ -48,3 +48,13 @@ $ ./main.sh run
     4 CVE-2025-0282
     ...
 ```
+
+To exclude the vulnerabilities from being displayed, we cam add them to the file `in-exclusions.txt` one-by-one and then those vulnerabilities do not appear in the final tally.
+```
+$ cat exclusions.csv
+CVE-2025-0282
+
+# Will show all the vulnerabilities, except CVE-2025-0282
+./main.sh run
+...
+```

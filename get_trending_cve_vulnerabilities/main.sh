@@ -6,16 +6,18 @@ FLETCH_AI_USER_ID="1207107275128623105"
 DATE_LOOKBACK_DAYS=3
 MAX_RESULTS=100
 CVE_COUNT_THRESHOLD=3
-USAGE="$0 run [cve_count_threshold=$CVE_COUNT_THRESHOLD] [date_lookback_days=$DATE_LOOKBACK_DAYS] [twitter_api_bearer_token=$TWITTER_VULNMGMT_TOKEN] [twitter_fetch_ai_username=$TWITTER_FLETCH_AI_USERNAME] [csvdb_file_prefix=$CSVDB_FILE_PREFIX]"
+EXCLUSIONS_FILE="in-exclusions.txt"
+USAGE="$0 run [cve_count_threshold=$CVE_COUNT_THRESHOLD] [date_lookback_days=$DATE_LOOKBACK_DAYS] [exclusions_file=$EXCLUSIONS_FILE] [twitter_api_bearer_token=$TWITTER_VULNMGMT_TOKEN] [twitter_fetch_ai_username=$TWITTER_FLETCH_AI_USERNAME] [csvdb_file_prefix=$CSVDB_FILE_PREFIX]"
 if [ $# -lt 1 ]; then
     echo "[-] $USAGE"
     exit 1
 fi
 cve_count_threshold=${2:-"$CVE_COUNT_THRESHOLD"}
 date_lookback_days=${3:-"$DATE_LOOKBACK_DAYS"}
-twitter_api_bearer_token=${4:-"$TWITTER_VULNMGMT_TOKEN"}
-twitter_fletch_ai_username=${5:-"$TWITTER_FLETCH_AI_USERNAME"}
-csvdb_file_prefix=${6:-"$CSVDB_FILE_PREFIX"}
+exclusions_file=${4:-"$EXCLUSIONS_FILE"}
+twitter_api_bearer_token=${5:-"$TWITTER_VULNMGMT_TOKEN"}
+twitter_fletch_ai_username=${6:-"$TWITTER_FLETCH_AI_USERNAME"}
+csvdb_file_prefix=${7:-"$CSVDB_FILE_PREFIX"}
 
 current_date=$(date +"%Y-%m-%d")
 lookback_date=$(date -d "$date_lookback_days days ago" +"%Y-%m-%d")
@@ -83,10 +85,28 @@ num_feedly_trending_vulns=$(echo "$feedly_trending_vulns" | wc -l)
 echo "[*] Number of Feedly Trending vulns found: $num_feedly_trending_vulns"
 
 # Combine all trending vulnerabilities list, and identify the ones found more common (>=threshold set)
-echo "[+] Trending vulnerabilities:"
-(echo "$cisa_kev_trending_vulns"; \
+all_trending_vuln_lines=$( (echo "$cisa_kev_trending_vulns"; \
     echo "$intruder_trending_vulns"; \
     echo "$feedly_trending_vulns"; \
     echo "$vulmon_trending_vulns"; \
     echo "$fletch_ai_trending_vulns") | sort \
-    | uniq -c | sort -nr | grep -iE "^[ ]*[$CVE_COUNT_THRESHOLD-9]"
+    | uniq -c | sort -nr | grep -iE "^[ ]*[$CVE_COUNT_THRESHOLD-9]")
+
+
+# Exclude the CVEs if exclusion found
+if [ -f "$exclusions_file" ]; then 
+    echo "[+] Trending vulnerabilities (Exclusions applied from $exclusions_file):"
+    IFS=$'\n'
+    for vuln_line in $all_trending_vuln_lines; do
+        vuln_cve_id=$(echo "$vuln_line" | grep -ioE "CVE-[0-9]+-[0-9]+")
+        vuln_found_in_exclusion=$(grep -i "$vuln_cve_id" $exclusions_file)
+
+        if [ -z "$vuln_found_in_exclusion" ]; then
+            echo "$vuln_line"
+        fi
+    done
+else
+    echo "[+] Trending vulnerabilities (No exclusions file):"
+    echo "$all_trending_vuln_lines"
+fi
+
