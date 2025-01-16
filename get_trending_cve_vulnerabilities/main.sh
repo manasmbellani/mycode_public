@@ -6,6 +6,7 @@ FLETCH_AI_USER_ID="1207107275128623105"
 DATE_LOOKBACK_DAYS=3
 MAX_RESULTS=100
 CVE_COUNT_THRESHOLD=3
+CVESHIELD_TOTAL_REPOSTS_COUNT_THRESHOLD=20
 EXCLUSIONS_FILE="in-exclusions.txt"
 USAGE="$0 run [cve_count_threshold=$CVE_COUNT_THRESHOLD] [date_lookback_days=$DATE_LOOKBACK_DAYS] [exclusions_file=$EXCLUSIONS_FILE] [twitter_api_bearer_token=$TWITTER_VULNMGMT_TOKEN] [twitter_fetch_ai_username=$TWITTER_FLETCH_AI_USERNAME] [csvdb_file_prefix=$CSVDB_FILE_PREFIX]"
 if [ $# -lt 1 ]; then
@@ -74,6 +75,33 @@ cisa_kev_trending_vulns=$(cat "$outfile" | grep -ioE "CVE-[0-9]+-[0-9]+" | sort 
 num_cisa_kev_trending_vulns=$(echo "$cisa_kev_trending_vulns" | wc -l)
 echo "[*] Number of CISA KEV Trending vulns found: $num_cisa_kev_trending_vulns"
 
+
+outfile="$TMP_DIR/$CVEDB_FILE_PREFIX-cveshield-$current_date"
+if [ ! -f "$outfile" ]; then
+    echo "[*] Getting all cveshield trending vulnerabilities list..."
+    curl -sL -H "User-Agent: $USER_AGENT" \
+        -H "apikey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBpcnFmeGF5Y3prc3p3b3lsdGdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODIwODIxMzksImV4cCI6MTk5NzY1ODEzOX0.6mcYujfaOoulklwDoO39hn2mWSBO4hhZBiNki1l8E0I" \
+        https://pirqfxayczkszwoyltgs.supabase.co/rest/v1/social_media_top_20_cve_day?select=* \
+        -o "$outfile"
+fi
+# Start parsing vulns from cveshield
+cveshield_trending_vulns=""
+num_cveshield_vulns=$(cat "$outfile" | jq -r ". | length")
+IFS=$'\n'
+for i in $(seq 0 $num_cveshield_vulns); do
+    cve_id=$(jq -r ".[$i].cve" "$outfile")
+    cve_reposts=$(jq -r ".[$i].total_reposts" "$outfile")
+    if [[ $cve_reposts -gt $CVESHIELD_TOTAL_REPOSTS_COUNT_THRESHOLD ]]; then
+        # Check that CVE from cveshield is not already added 
+        cve_already_identified=$(echo "$cveshield_trending_vulns" | grep -i "$cve_id")
+        if [ -z "$cve_already_identified" ]; then
+            cveshield_trending_vulns="$cveshield_trending_vulns\n$cve_id"
+        fi
+    fi
+done
+num_cveshield_trending_vulns=$(echo "$cveshield_trending_vulns" | wc -l)
+echo "[*] Number of Cveshield Trending vulns found: $num_cveshield_trending_vulns"
+
 outfile="$TMP_DIR/$CVEDB_FILE_PREFIX-feedly-$current_date"
 if [ ! -f "$outfile" ]; then
     echo "[*] Getting all Feedly trending vulnerabilities list..."
@@ -85,13 +113,13 @@ num_feedly_trending_vulns=$(echo "$feedly_trending_vulns" | wc -l)
 echo "[*] Number of Feedly Trending vulns found: $num_feedly_trending_vulns"
 
 # Combine all trending vulnerabilities list, and identify the ones found more common (>=threshold set)
-all_trending_vuln_lines=$( (echo "$cisa_kev_trending_vulns"; \
-    echo "$intruder_trending_vulns"; \
-    echo "$feedly_trending_vulns"; \
-    echo "$vulmon_trending_vulns"; \
-    echo "$fletch_ai_trending_vulns") | sort \
+all_trending_vuln_lines=$( (echo -e "$cisa_kev_trending_vulns"; \
+    echo -e "$intruder_trending_vulns"; \
+    echo -e "$feedly_trending_vulns"; \
+    echo -e "$vulmon_trending_vulns"; \
+    echo -e "$cveshield_trending_vulns"; \
+    echo -e "$fletch_ai_trending_vulns") | sort \
     | uniq -c | sort -nr | grep -iE "^[ ]*[$CVE_COUNT_THRESHOLD-9]")
-
 
 # Exclude the CVEs if exclusion found
 if [ -f "$exclusions_file" ]; then 
