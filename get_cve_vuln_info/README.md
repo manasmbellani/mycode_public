@@ -10,6 +10,7 @@ Currently, following sources are searched for CVE Info:
 - CISA KEV
 - ExploitDB
 - Nomi-Sec's PoC in Github
+- Snyk: https://security.snyk.io/vuln/
 
 ## Setup
 

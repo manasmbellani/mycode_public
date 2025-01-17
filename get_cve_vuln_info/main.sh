@@ -7,6 +7,8 @@ EXPLOITDB_CLONE_DIR="$HOME/opt/exploitdb"
 EXPLOITDB_CLONE_URL="https://gitlab.com/exploit-database/exploitdb.git/"
 POCS_IN_GITHUB_CLONE_DIR="$HOME/opt/PoC-in-GitHub"
 POCS_IN_GITHUB_CLONE_URL="https://github.com/nomi-sec/PoC-in-GitHub"
+SNYK_VULN_DB_DOMAIN="https://security.snyk.io"
+SNYK_POTENTIAL_EXPLOIT_KEYWORDS="exploit-db|metasploit-framework|pwn|nuclei-template"
 CVEDB_FILE_PREFIX="cvedb"
 WRITE_TO_OUTFILE=1
 OUTFILE_PREFIX="out-cve-info"
@@ -101,6 +103,21 @@ cisakev_cve_id_info=$(jq -r ".vulnerabilities[] | select(.cveID==\"$cve_id\")" "
 epss_cve_id_info=$(curl -H "User-Agent: $USER_AGENT" -sL \
         "https://api.first.org/data/v1/epss?cve=$cve_id" | jq -r ".data[]")
 
+# Search info in SNYK about the CVE & parse each result
+tmpfile=$(mktemp -u)
+snyk_cve_info=""
+curl -sL "User-Agent: $USER_AGENT" "$SNYK_VULN_DB_DOMAIN/vuln/?search=$cve_id" > "$tmpfile"
+cve_vuln_results=$(grep -ioE '<a class="anchor anchor--underline anchor--default" href="[^"]+" data-snyk-test="[^"]+" data-snyk-cy-test="[^"]+"' "$tmpfile" | cut -d '"' -f4)
+IFS=$'\n'
+for cve_vuln_result_path in $cve_vuln_results; do
+    # Process the references from Snyk to determine if there are any exploits
+    curl -sL -H "User-Agent: $USER_AGENT" "$SNYK_VULN_DB_DOMAIN/$cve_vuln_result_path" > "$tmpfile"
+    refs=$(grep -ioE '<a href="[^"]+">[^<]+</a>' "$tmpfile" | cut -d'"' -f2)
+    snyk_cve_potential_exploit_refs=$(echo "$refs" | grep -iE "$SNYK_POTENTIAL_EXPLOIT_KEYWORDS")
+    snyk_cve_info="Refs:\n$refs\n\nExploit Refs:\n$snyk_cve_potential_exploit_refs\n\n"
+done
+rm "$tmpfile" 
+
 echo "[+] CVEList Info:"  | tee "$outfile_path"
 cat "$cvelist_cve_id_path" | tee -a "$outfile_path"
 echo -e "\n------\n\n" | tee -a "$outfile_path"
@@ -119,4 +136,8 @@ echo -e "\n------\n\n" | tee -a "$outfile_path"
 
 echo "[+] POCs In Github Info:" | tee -a "$outfile_path"
 echo "$pocs_in_github_cve_info" | tee -a "$outfile_path"
+echo -e "\n------\n\n" | tee -a "$outfile_path"
+
+echo "[+] SNYK CVE Info:" | tee -a "$outfile_path"
+echo -e "$snyk_cve_info" | tee -a "$outfile_path"
 echo -e "\n------\n\n" | tee -a "$outfile_path"
