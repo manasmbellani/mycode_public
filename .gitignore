@@ -140,3 +140,9 @@ dmypy.json
 
 # Ignore PDF files
 **/*.pdf
+
+# Ignore Input and output files
+**/in-*
+**/out-*
+**/in_*
+**/out_*
