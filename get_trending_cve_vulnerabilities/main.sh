@@ -23,6 +23,7 @@ csvdb_file_prefix=${7:-"$CSVDB_FILE_PREFIX"}
 current_date=$(date +"%Y-%m-%d")
 lookback_date=$(date -d "$date_lookback_days days ago" +"%Y-%m-%d")
 
+
 fletch_ai_trending_vulns=""
 if [ ! -z "$twitter_api_bearer_token" ]; then
     outfile="$TMP_DIR/$CVEDB_FILE_PREFIX-fletchai-$current_date"
@@ -46,6 +47,7 @@ else
     echo "[!] Ignoring FletchAI Trending vulns extraction as Twitter API Bearer Token not provided"
 fi
 
+
 outfile="$TMP_DIR/$CVEDB_FILE_PREFIX-vulmon-$current_date"
 if [ ! -f "$outfile" ]; then
     echo "[*] Getting list of latest vulmon trending vulnerabilities..."
@@ -55,6 +57,7 @@ vulmon_trending_vulns=$(cat "$outfile" | grep -i datasets | grep -ioE "label: '[
 num_vulmon_trending_vulns=$(echo "$vulmon_trending_vulns" | wc -l)
 echo "[*] Number of Vulmon Trending vulns found: $num_vulmon_trending_vulns"
 
+
 outfile="$TMP_DIR/$CVEDB_FILE_PREFIX-intruder-$current_date"
 if [ ! -f "$outfile" ]; then
     echo "[*] Getting list of Intruder Intel trending vulnerabilities..."
@@ -63,6 +66,7 @@ fi
 intruder_trending_vulns=$(cat "$outfile"  | grep -oE "CVE-[0-9]+-[0-9]+" | sort | uniq )
 num_intruder_trending_vulns=$(echo "$intruder_trending_vulns" | wc -l)
 echo "[*] Number of Intruder Intel Trending vulns found: $num_intruder_trending_vulns"
+
 
 outfile="$TMP_DIR/$CVEDB_FILE_PREFIX-cisakev-$current_date"
 if [ ! -f "$outfile" ]; then
@@ -76,6 +80,16 @@ num_cisa_kev_trending_vulns=$(echo "$cisa_kev_trending_vulns" | wc -l)
 echo "[*] Number of CISA KEV Trending vulns found: $num_cisa_kev_trending_vulns"
 
 
+outfile="$TMP_DIR/$CVEDB_FILE_PREFIX-securityvulnerabilityio-$current_date"
+if [ ! -f "$outfile" ]; then
+    echo "[*] Getting list of latest securityvulnerability.io trending vulnerabilities..."
+    curl -H "User-Agent: $USER_AGENT" -sL "https://securityvulnerability.io/" -o "$outfile"
+fi
+securityvulnerabilityio_trending_vulns=$(cat "$outfile" | grep -oE "CVE-[0-9]+-[0-9]+" | sort | uniq)
+num_securityvulnerabilityio_trending_vulns=$(echo "$securityvulnerabilityio_trending_vulns" | wc -l)
+echo "[*] Number of SecurityVulnerability.io Trending vulns found: $num_securityvulnerabilityio_trending_vulns"
+
+
 outfile="$TMP_DIR/$CVEDB_FILE_PREFIX-cveshield-$current_date"
 if [ ! -f "$outfile" ]; then
     echo "[*] Getting all cveshield trending vulnerabilities list..."
@@ -84,6 +98,8 @@ if [ ! -f "$outfile" ]; then
         https://pirqfxayczkszwoyltgs.supabase.co/rest/v1/social_media_top_20_cve_day?select=* \
         -o "$outfile"
 fi
+
+
 # Start parsing vulns from cveshield
 cveshield_trending_vulns=""
 num_cveshield_vulns=$(cat "$outfile" | jq -r ". | length")
@@ -102,6 +118,7 @@ done
 num_cveshield_trending_vulns=$(echo "$cveshield_trending_vulns" | wc -l)
 echo "[*] Number of Cveshield Trending vulns found: $num_cveshield_trending_vulns"
 
+
 outfile="$TMP_DIR/$CVEDB_FILE_PREFIX-feedly-$current_date"
 if [ ! -f "$outfile" ]; then
     echo "[*] Getting all Feedly trending vulnerabilities list..."
@@ -112,14 +129,17 @@ feedly_trending_vulns=$(cat "$outfile" | grep -ioE "trendingVulnerabilities\":\[
 num_feedly_trending_vulns=$(echo "$feedly_trending_vulns" | wc -l)
 echo "[*] Number of Feedly Trending vulns found: $num_feedly_trending_vulns"
 
+
 # Combine all trending vulnerabilities list, and identify the ones found more common (>=threshold set)
 all_trending_vuln_lines=$( (echo -e "$cisa_kev_trending_vulns"; \
     echo -e "$intruder_trending_vulns"; \
     echo -e "$feedly_trending_vulns"; \
     echo -e "$vulmon_trending_vulns"; \
     echo -e "$cveshield_trending_vulns"; \
+    echo -e "$securityvulnerabilityio_trending_vulns"; \
     echo -e "$fletch_ai_trending_vulns") | sort \
     | uniq -c | sort -nr | grep -iE "^[ ]*[$CVE_COUNT_THRESHOLD-9]")
+
 
 # Exclude the CVEs if exclusion found
 if [ -f "$exclusions_file" ]; then 

@@ -7,7 +7,8 @@ Script will connect to the following public web sources and scrape the web pages
 Connected Public Web Sources:
 - Feedly: https://feedly.com/cve
 - VulMon: https://vulmon.com/
-- Fletch API (via Twitter/X API)
+- SecurityVulnerability.io: https://securityvulnerability.io/
+- Fletch API (via Twitter/X API): https://x.com/fletch_ai/
 - CISA KEV: https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json
 - Intel Intruder: https://intel.intruder.io/
 - CVEShield: https://www.cveshield.com/
