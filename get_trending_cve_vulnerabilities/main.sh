@@ -5,7 +5,7 @@ TMP_DIR="/tmp"
 FLETCH_AI_USER_ID="1207107275128623105"
 DATE_LOOKBACK_DAYS=3
 MAX_RESULTS=100
-CVE_COUNT_THRESHOLD=3
+CVE_COUNT_THRESHOLD=4
 CVESHIELD_TOTAL_REPOSTS_COUNT_THRESHOLD=20
 EXCLUSIONS_FILE="in-exclusions.txt"
 USAGE="$0 run [cve_count_threshold=$CVE_COUNT_THRESHOLD] [date_lookback_days=$DATE_LOOKBACK_DAYS] [exclusions_file=$EXCLUSIONS_FILE] [twitter_api_bearer_token=$TWITTER_VULNMGMT_TOKEN] [twitter_fetch_ai_username=$TWITTER_FLETCH_AI_USERNAME] [csvdb_file_prefix=$CSVDB_FILE_PREFIX]"
@@ -21,7 +21,12 @@ twitter_fletch_ai_username=${6:-"$TWITTER_FLETCH_AI_USERNAME"}
 csvdb_file_prefix=${7:-"$CSVDB_FILE_PREFIX"}
 
 current_date=$(date +"%Y-%m-%d")
-lookback_date=$(date -d "$date_lookback_days days ago" +"%Y-%m-%d")
+
+if [[ "`uname`" == "Darwin"  ]]; then
+    lookback_date=$(date -v "-$date_lookback_days""d"  +"%Y-%m-%d")
+else
+    lookback_date=$(date -d "$date_lookback_days days ago" +"%Y-%m-%d")
+fi
 
 
 fletch_ai_trending_vulns=""
@@ -138,7 +143,7 @@ all_trending_vuln_lines=$( (echo -e "$cisa_kev_trending_vulns"; \
     echo -e "$cveshield_trending_vulns"; \
     echo -e "$securityvulnerabilityio_trending_vulns"; \
     echo -e "$fletch_ai_trending_vulns") | sort \
-    | uniq -c | sort -nr | grep -iE "^[ ]*[$CVE_COUNT_THRESHOLD-9]")
+    | uniq -c | sort -nr | grep -iE "^[ ]*[$cve_count_threshold-9]"
 
 
 # Exclude the CVEs if exclusion found

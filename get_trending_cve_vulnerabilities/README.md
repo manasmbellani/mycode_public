@@ -2,7 +2,7 @@
 
 Script to connect to variety of public vulnerability trending sources to identify vulnerabilities which appear to be most talked about.
 
-Script will connect to the following public web sources and scrape the web pages (or JSON if available in case of CISA KEV) to identify the vulnerabilities which are being most talked about. The raw results from each public source is saved locally in temp directory with a prefix (default: csvdb) and the current date (default: yyyy-mm-dd) in the name, so the public web sources are not queried repeatedly. If the CVE ID appears in atleast the threshold number of databases (default: 3), then it is printed in the output.
+Script will connect to the following public web sources and scrape the web pages (or JSON if available in case of CISA KEV) to identify the vulnerabilities which are being most talked about. The raw results from each public source is saved locally in temp directory with a prefix (default: csvdb) and the current date (default: yyyy-mm-dd) in the name, so the public web sources are not queried repeatedly. If the CVE ID appears in atleast the threshold number of databases (default: 4), then it is printed in the output.
 
 Connected Public Web Sources:
 - Feedly: https://feedly.com/cve
