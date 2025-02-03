@@ -143,7 +143,7 @@ all_trending_vuln_lines=$( (echo -e "$cisa_kev_trending_vulns"; \
     echo -e "$cveshield_trending_vulns"; \
     echo -e "$securityvulnerabilityio_trending_vulns"; \
     echo -e "$fletch_ai_trending_vulns") | sort \
-    | uniq -c | sort -nr | grep -iE "^[ ]*[$cve_count_threshold-9]"
+    | uniq -c | sort -nr | grep -iE "^[ ]*[$cve_count_threshold-9]")
 
 
 # Exclude the CVEs if exclusion found
