@@ -13,6 +13,15 @@ python3 -m pip install -r requirements.txt
 deactivate
 ```
 
+For videos captioning, ensure that `ffmpeg` is also installed
+
+```
+# Macbook
+brew install ffmpeg
+# Linux
+apt-get -y install ffmpeg
+```
+
 ## Usage
 
 To be able to add caption `Test Caption 3` but also include date and name of folder `test` in the caption and remove any HEIC image files: 
